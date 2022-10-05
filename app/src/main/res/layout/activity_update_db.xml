@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".UpdateDB">
+
+    <EditText
+        android:id="@+id/etProductUpdate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:hint="Product"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/etPriceUpdate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:hint="Price"
+        android:inputType="number"
+        app:layout_constraintEnd_toStartOf="@id/etQuantityUpdate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etProductUpdate" />
+
+    <EditText
+        android:id="@+id/etQuantityUpdate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:hint="Quantity"
+        android:inputType="number"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/etPriceUpdate"
+        app:layout_constraintTop_toBottomOf="@+id/etProductUpdate" />
+
+    <android.widget.Button
+        android:id="@+id/btnUpdate"
+        android:layout_width="245dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:text="update"
+        android:textColor="@color/white"
+        android:background="@drawable/button_style"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etPriceUpdate" />
+
+    <android.widget.Button
+        android:id="@+id/btnTransitionToMain2"
+        android:layout_width="245dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_style"
+        android:text="previous page"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnDelete" />
+
+    <android.widget.Button
+        android:id="@+id/btnDelete"
+        android:layout_width="245dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_style"
+        android:text="delete"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnUpdate" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
