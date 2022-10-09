@@ -30,7 +30,6 @@
         app:layout_constraintStart_toEndOf="@id/btnRefresh"
         app:layout_constraintTop_toBottomOf="@id/scrollV" />
 
-
     <ScrollView
         android:id="@+id/scrollV"
         android:layout_width="0dp"

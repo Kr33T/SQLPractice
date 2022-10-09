@@ -1,16 +1,25 @@
 package com.example.sqlpractice;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TableLayout;
@@ -18,9 +27,12 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Base64;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -123,6 +135,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         GetInfoFromSql();
     }
 
+    //Из строки в изображение
+    private Bitmap getImgBitmap(String encodedImg) {
+        if (encodedImg != null) {
+            byte[] bytes = new byte[0];
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                bytes = Base64.getDecoder().decode(encodedImg);
+            }
+            return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        }
+        return BitmapFactory.decodeResource(MainActivity.this.getResources(),
+                R.drawable.empty);
+    }
+
+    public void makeTableRowImageView(TableRow.LayoutParams params, String res, TableRow tableRow)
+    {
+        ImageView image = new ImageView(this);
+        params.weight = 1.0f;
+        image.setImageBitmap(getImgBitmap(res));
+        params.width = 100;
+        params.height = 150;
+        params.gravity = Gravity.CENTER_VERTICAL;
+        params.bottomMargin = 50;
+        params.topMargin = 50;
+        image.setLayoutParams(params);
+        tableRow.addView(image);
+    }
+
     public void makeTableRowTextView(TableRow.LayoutParams params, String text, int size, TableRow tableRow){
         TextView textView = new TextView(this);
         params.weight = 1.0f;
@@ -137,8 +176,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         deleteBtn.setOnClickListener(this);
         params.weight = 1.0f;
         deleteBtn.setLayoutParams(params);
-        deleteBtn.setText("upd/del");
-        deleteBtn.setTextSize(12);
+        deleteBtn.setText("upd");
+        deleteBtn.setTextSize(10);
         deleteBtn.setId(id);
         tableRow.addView(deleteBtn);
     }
@@ -176,7 +215,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void GetInfoFromSql(){
 
         try{
-
             DBHelper connectionHelper = new DBHelper();
             connection = connectionHelper.connectionClass();
 
@@ -187,11 +225,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             if(!orderByItemS.getSelectedItem().toString().isEmpty())
             {
-                query = "select * from storage where goodName like '%" + searchET.getText() + "%' order by " + orderItem + " " + sortBy;
+                query = "select *, convert(varchar(max), goodImage) from storage where goodName like '%" + searchET.getText() + "%' order by " + orderItem + " " + sortBy;
             }
             else
             {
-                query = "select * from storage where goodName like '%" + searchET.getText() + "%'";
+                query = "select *, convert(varchar(max), goodImage) from storage where goodName like '%" + searchET.getText() + "%'";
             }
 
             if(connection!=null){
@@ -202,10 +240,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 TableRow namingColumns = new TableRow(this);
                 TableRow.LayoutParams params = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
 
-                makeTableRowTextView(params, "Product", 22, namingColumns);
-                makeTableRowTextView(params, "Price", 22, namingColumns);
-                makeTableRowTextView(params, "Quantity", 22, namingColumns);
-                makeTableRowTextView(params, "", 22, namingColumns);
+                makeTableRowTextView(params, "Image", 18, namingColumns);
+                makeTableRowTextView(params, "Product", 18, namingColumns);
+                makeTableRowTextView(params, "Price", 18, namingColumns);
+                makeTableRowTextView(params, "Quantity", 18, namingColumns);
+                makeTableRowTextView(params, "", 18, namingColumns);
 
                 dbOutput.addView(namingColumns);
 
@@ -213,9 +252,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     TableRow dbOutputRow = new TableRow(this);
                     dbOutputRow.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
-                    makeTableRowTextView(params, resultSet.getString(2), 17, dbOutputRow);
-                    makeTableRowTextView(params, resultSet.getString(3), 17, dbOutputRow);
-                    makeTableRowTextView(params, resultSet.getString(4), 17, dbOutputRow);
+                    makeTableRowImageView(params, resultSet.getString(6), dbOutputRow);
+                    makeTableRowTextView(params, resultSet.getString(2), 15, dbOutputRow);
+                    makeTableRowTextView(params, resultSet.getString(3), 15, dbOutputRow);
+                    makeTableRowTextView(params, resultSet.getString(4), 15, dbOutputRow);
 
                     makeTableRowButton(params, Integer.parseInt(resultSet.getString(1)), dbOutputRow);
 
