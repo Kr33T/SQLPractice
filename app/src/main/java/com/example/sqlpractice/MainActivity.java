@@ -4,24 +4,35 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
+    public static int index;
     Connection connection;
     String ConnectionResult = "";
-
-    Button btnRefresh, btnTransitionToUpdate;
+    Button btnRefresh, btnTransitionToUpdate, btnClearOrderBy;
+    EditText searchET;
+    Spinner orderByItemS, sortByS;
+    String orderItem, sortBy;
+    Statement statement;
+    ResultSet resultSet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,13 +41,86 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         getSupportActionBar().hide();
 
-        btnRefresh = (Button) findViewById(R.id.btnRefresh);
+        btnRefresh = findViewById(R.id.btnRefresh);
         btnRefresh.setOnClickListener(this);
 
-        btnTransitionToUpdate = (Button) findViewById(R.id.btnTransitionToUpdate);
+        btnTransitionToUpdate = findViewById(R.id.btnTransitionToUpdate);
         btnTransitionToUpdate.setOnClickListener(this);
 
-        GetTextFromSql();
+        btnClearOrderBy = findViewById(R.id.clearOrderBy);
+        btnClearOrderBy.setOnClickListener(this);
+
+        searchET = findViewById(R.id.searchET);
+        searchET.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                GetInfoFromSql();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+
+        });
+
+        orderByItemS = findViewById(R.id.orderByItem);
+        orderByItemS.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                switch(orderByItemS.getSelectedItemPosition())
+                {
+                    case 0:
+                        orderItem = "";
+                        break;
+                    case 1:
+                        orderItem = "goodName";
+                        break;
+                    case 2:
+                        orderItem = "price";
+                        break;
+                    case 3:
+                        orderItem = "quantity";
+                        break;
+                }
+                GetInfoFromSql();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        sortByS = findViewById(R.id.descOrAsc);
+        sortByS.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                switch(sortByS.getSelectedItemPosition())
+                {
+                    case 0:
+                        sortBy = "asc";
+                        break;
+                    case 1:
+                        sortBy = "desc";
+                        break;
+                }
+                GetInfoFromSql();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        GetInfoFromSql();
     }
 
     public void makeTableRowTextView(TableRow.LayoutParams params, String text, int size, TableRow tableRow){
@@ -59,14 +143,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tableRow.addView(deleteBtn);
     }
 
-    public static int index;
-
     @Override
     public void onClick(View v){
         switch(v.getId()){
             case R.id.btnRefresh:
 
-                GetTextFromSql();
+                GetInfoFromSql();
 
                 Toast.makeText(this, "Таблица обновлена", Toast.LENGTH_SHORT).show();
 
@@ -75,6 +157,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 startActivity(new Intent(this, InsertDB.class));
 
+                break;
+            case R.id.clearOrderBy:
+                searchET.setText("");
+                orderByItemS.setSelection(0);
+                sortByS.setSelection(0);
                 break;
             default:
 
@@ -86,10 +173,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    Statement statement;
-    ResultSet resultSet;
-
-    public void GetTextFromSql(){
+    public void GetInfoFromSql(){
 
         try{
 
@@ -99,8 +183,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             TableLayout dbOutput = findViewById(R.id.dbOutput);
             dbOutput.removeAllViews();
 
+            String query = "select * from storage where goodName like '%" + searchET.getText() + "%'";
+
+            if(!orderByItemS.getSelectedItem().toString().isEmpty())
+            {
+                query = "select * from storage where goodName like '%" + searchET.getText() + "%' order by " + orderItem + " " + sortBy;
+            }
+            else
+            {
+                query = "select * from storage where goodName like '%" + searchET.getText() + "%'";
+            }
+
             if(connection!=null){
-                String query = "select * from storage";
+
                 statement = connection.createStatement();
                 resultSet = statement.executeQuery(query);
 

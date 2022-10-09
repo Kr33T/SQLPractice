@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">SQLPractice</string>
+    <string-array name="bdNames">
+        <item></item>
+        <item>Product</item>
+        <item>price</item>
+        <item>Quantity</item>
+    </string-array>
+    <string-array name="ascOrDesc">
+        <item>Ascending</item>
+        <item>Descending</item>
+    </string-array>
 </resources>

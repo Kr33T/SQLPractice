@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,15 +29,15 @@ public class InsertDB extends AppCompatActivity implements View.OnClickListener 
 
         getSupportActionBar().hide();
 
-        btnUpdate = (Button) findViewById(R.id.btnInsert);
+        btnUpdate = findViewById(R.id.btnInsert);
         btnUpdate.setOnClickListener(this);
 
-        btnTransitionToMain = (Button) findViewById(R.id.btnTransitionToMain);
+        btnTransitionToMain = findViewById(R.id.btnTransitionToMain);
         btnTransitionToMain.setOnClickListener(this);
 
-        edProduct = (EditText) findViewById(R.id.etProduct);
-        edPrice = (EditText) findViewById(R.id.etPrice);
-        edQuantity = (EditText) findViewById(R.id.etQuantity);
+        edProduct = findViewById(R.id.etProduct);
+        edPrice = findViewById(R.id.etPrice);
+        edQuantity = findViewById(R.id.etQuantity);
     }
 
     @Override
@@ -51,13 +52,17 @@ public class InsertDB extends AppCompatActivity implements View.OnClickListener 
                     connection = connectionHelper.connectionClass();
 
                     String query = "insert into storage (goodName, price, quantity) values ('" + edProduct.getText() + "', " + edPrice.getText() + ", " + edQuantity.getText() + ")";
+
+                    edProduct.setText("");
+                    edPrice.setText("");
+                    edQuantity.setText("");
+                    Toast.makeText(this, "Запись добавлена", Toast.LENGTH_SHORT).show();
+
                     Statement statement = connection.createStatement();
                     statement.executeQuery(query);
-
-                    Toast.makeText(this, "Запись добавлена", Toast.LENGTH_SHORT).show();
                 }
                 catch (Exception ex){
-
+                    Log.e("Error", ex.getMessage());
                 }
                 break;
         }

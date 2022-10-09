@@ -10,13 +10,13 @@
         android:id="@+id/btnRefresh"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="refresh"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:textColor="@color/white"
         android:background="@drawable/button_style"
+        android:text="refresh"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/btnTransitionToUpdate"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/dbOutput" />
+        app:layout_constraintTop_toBottomOf="@id/scrollV" />
 
     <android.widget.Button
         android:id="@+id/btnTransitionToUpdate"
@@ -28,17 +28,90 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/btnRefresh"
-        app:layout_constraintTop_toBottomOf="@id/dbOutput" />
+        app:layout_constraintTop_toBottomOf="@id/scrollV" />
 
-    <TableLayout
-        android:id="@+id/dbOutput"
+
+    <ScrollView
+        android:id="@+id/scrollV"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="20dp"
+        android:layout_weight="1"
+        android:scrollbars="none"
         app:layout_constraintBottom_toTopOf="@id/btnRefresh"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/clearOrderBy">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical">
+
+            <TableLayout
+                android:id="@+id/dbOutput"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <EditText
+        android:id="@+id/searchET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="searching"
+        app:layout_constraintBottom_toTopOf="@id/sortText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/sortText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Order by"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@id/orderByItem"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/searchET" />
+
+    <Spinner
+        android:id="@+id/orderByItem"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:entries="@array/bdNames"
+        android:minHeight="48dp"
+        app:layout_constraintBottom_toTopOf="@id/clearOrderBy"
+        app:layout_constraintEnd_toStartOf="@id/descOrAsc"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sortText" />
+
+    <Spinner
+        android:id="@+id/descOrAsc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:entries="@array/ascOrDesc"
+        android:minHeight="48dp"
+        app:layout_constraintBottom_toTopOf="@id/clearOrderBy"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/orderByItem"
+        app:layout_constraintTop_toBottomOf="@id/sortText" />
+
+    <android.widget.Button
+        android:id="@+id/clearOrderBy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_style"
+        android:text="Clear sorting"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@id/scrollV"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/orderByItem"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
